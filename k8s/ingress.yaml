@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  namespace: microservizi-app
+  annotations:
+    # Questa annotazione dice a NGINX di trattare i percorsi come espressioni regolari
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    # Questa dice come riscrivere il percorso: cattura tutto dopo il prefisso e usalo
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    # Questa annotazione è cruciale per Keycloak
+    nginx.ingress.kubernetes.io/proxy-set-header-Host: $host
+    # Questa dice a Keycloak che la connessione originale era HTTP
+    nginx.ingress.kubernetes.io/proxy-set-header-X-Forwarded-Proto: http
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: microservizi.local
+      http:
+        paths:
+          - path: /auth(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: keycloak-service
+                port:
+                  number: 8080
+          - path: /ordini/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ordini-service
+                port:
+                  number: 8081
+          - path: /catalogo/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: catalogo-service
+                port:
+                  number: 8082

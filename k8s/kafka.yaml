@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+  namespace: microservizi-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: kafka
+        image: redpandadata/redpanda:latest
+        ports:
+        - containerPort: 9092
+        - containerPort: 8081
+        - containerPort: 8080
+        command:
+        - /usr/bin/rpk
+        - redpanda
+        - start
+        - --smp
+        - "1"
+        - --memory
+        - "1G"
+        - --reserve-memory
+        - "0M"
+        - --overprovisioned
+        - --node-id
+        - "0"
+        - --check=false
+        - --kafka-addr
+        - "PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092"
+        - --advertise-kafka-addr
+        - "PLAINTEXT://kafka:29092,OUTSIDE://kafka:9092"
+        - --pandaproxy-addr
+        - "0.0.0.0:8082"
+        - --advertise-pandaproxy-addr
+        - "kafka:8082"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: microservizi-app
+spec:
+  selector:
+    app: kafka
+  ports:
+  - name: kafka
+    port: 9092
+    targetPort: 9092
+  - name: proxy
+    port: 8082
+    targetPort: 8082
+  - name: admin
+    port: 8080
+    targetPort: 8080

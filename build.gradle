@@ -1,0 +1,82 @@
+plugins {
+    id 'java'
+    id 'io.quarkus'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    //Quarkus BOM
+    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+
+    implementation 'io.quarkus:quarkus-arc'
+    implementation 'io.quarkus:quarkus-hibernate-orm-panache'
+    implementation 'io.quarkus:quarkus-jdbc-postgresql'
+    implementation 'io.quarkus:quarkus-hibernate-validator'
+    implementation 'io.quarkus:quarkus-hibernate-envers'
+    implementation 'io.quarkus:quarkus-resteasy-reactive-jsonb'
+    implementation 'io.quarkus:quarkus-rest-client-reactive-jsonb'
+    implementation 'io.quarkus:quarkus-smallrye-fault-tolerance'
+    implementation 'io.quarkus:quarkus-smallrye-health'
+    implementation 'io.quarkus:quarkus-smallrye-opentracing'
+    implementation 'io.quarkus:quarkus-smallrye-reactive-messaging-kafka'
+    implementation 'io.quarkus:quarkus-smallrye-openapi'
+    implementation 'io.quarkus:quarkus-config-yaml'
+    implementation 'io.quarkus:quarkus-info'
+    implementation 'io.quarkus:quarkus-cache'
+    implementation 'io.quarkus:quarkus-flyway'
+    implementation 'io.quarkus:quarkus-micrometer-registry-prometheus'
+    implementation 'io.quarkus:quarkus-smallrye-fault-tolerance'
+
+    // Security (abilita dove necessario)
+    //implementation 'io.quarkus:quarkus-oidc'
+    //implementation 'io.quarkus:quarkus-keycloak-authorization'
+
+    // Commons
+    implementation "org.apache.commons:commons-lang3:${apacheCommonLangsVersion}"
+
+    // ModelMapper
+    implementation "org.modelmapper:modelmapper:${modelMapperVersion}"
+
+    // Modulo comune (attiva solo dove necessario)
+    //implementation project(':common-module')
+
+    // Lombok (solo compile & annotation processing)
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    // JPA model generator
+    annotationProcessor "org.hibernate.orm:hibernate-jpamodelgen:${jpaModelgenVersion}"
+
+    // Test
+    testImplementation 'io.quarkus:quarkus-junit5'
+    testImplementation 'io.rest-assured:rest-assured'
+    //testImplementation "org.assertj:assertj-core:${assertjCoreVersion}"
+    //testImplementation "org.testcontainers:junit-jupiter:${testContainerVersion}"
+    //testImplementation "org.testcontainers:postgresql:${testContainerVersion}"
+
+}
+
+group 'it.paa'
+version '1.4.0-ALPHA'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+test {
+    systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-parameters'
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+}

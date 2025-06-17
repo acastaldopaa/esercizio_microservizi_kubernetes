@@ -1,0 +1,13 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: microservizi-app
+data:
+  kafka.bootstrap.servers: "kafka:9092"
+  postgresql.host: "postgresql"
+  postgresql.port: "5432"
+  postgresql.database: "postgres"
+  ordini.url: "http://ordini-service:8081"
+  catalogo.url: "http://catalogo-service:8082"
